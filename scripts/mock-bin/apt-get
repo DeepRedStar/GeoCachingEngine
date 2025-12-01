@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -euo pipefail
+echo "[MOCK] apt-get $*" >&2
+exit 0

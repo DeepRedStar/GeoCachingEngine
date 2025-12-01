@@ -1,0 +1,35 @@
+{
+  "name": "geocachingengine",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "setup": "tsx scripts/setup-wizard.ts",
+    "deploy:config": "tsx scripts/deploy-wizard.ts",
+    "dev": "concurrently \"npm:dev:backend\" \"npm:dev:frontend\"",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "build": "npm run build --prefix backend && npm run build --prefix frontend",
+    "start:backend": "node backend/dist/index.js",
+    "start:frontend": "npm run preview --prefix frontend -- --host 0.0.0.0 --port 4173",
+    "migrate": "npx prisma migrate deploy && npx prisma generate",
+    "cleanup": "tsx backend/src/cleanup.ts",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\"",
+    "lint": "npm run lint --prefix backend && npm run lint --prefix frontend"
+  },
+  "dependencies": {
+    "concurrently": "^9.0.1",
+    "dotenv": "^16.4.5",
+    "prompts": "^2.4.2",
+    "tsx": "^4.15.7"
+  },
+  "devDependencies": {
+    "prisma": "^5.20.0",
+    "prettier": "^3.3.3",
+    "typescript": "^5.6.3"
+  }
+}

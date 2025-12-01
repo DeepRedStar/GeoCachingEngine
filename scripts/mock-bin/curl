@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+echo "[MOCK] curl $*" >&2
+# Produce a benign script for piped executions
+cat <<'MOCKSCRIPT'
+#!/usr/bin/env bash
+echo "[MOCK] nodesource setup stub"
+MOCKSCRIPT
+exit 0
