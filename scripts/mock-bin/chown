@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -euo pipefail
+echo "[MOCK] chown $*" >&2
+exit 0
