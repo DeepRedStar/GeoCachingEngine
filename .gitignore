@@ -35,3 +35,4 @@ pnpm-debug.log*
 
 # Misc
 *.pid
+geocachingengine-credentials.txt

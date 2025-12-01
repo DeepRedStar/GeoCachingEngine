@@ -1,0 +1,14 @@
+[Unit]
+Description=GeoCachingEngine (Beispielservice)
+After=network.target
+
+[Service]
+Type=simple
+User=geocaching
+WorkingDirectory=/opt/geocachingengine
+EnvironmentFile=/opt/geocachingengine/.env
+ExecStart=/usr/bin/npm run start:backend --prefix /opt/geocachingengine
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

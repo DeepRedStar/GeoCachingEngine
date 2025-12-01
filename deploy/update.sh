@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-APP_DIR="/opt/geocaching"
+APP_DIR=${APP_DIR:-/opt/geocachingengine}
 
 cd "$APP_DIR"
 git pull
