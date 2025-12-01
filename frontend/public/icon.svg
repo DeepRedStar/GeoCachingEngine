@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">GeoCachingEngine</title>
+  <desc id="desc">Minimalist placeholder compass for GeoCachingEngine PWA icon</desc>
+  <rect width="128" height="128" fill="#0f172a" rx="16"/>
+  <circle cx="64" cy="64" r="46" fill="none" stroke="#38bdf8" stroke-width="6"/>
+  <path d="M64 26 L78 64 L64 102 L50 64 Z" fill="#38bdf8" opacity="0.85"/>
+  <circle cx="64" cy="64" r="6" fill="#0f172a" stroke="#38bdf8" stroke-width="3"/>
+</svg>

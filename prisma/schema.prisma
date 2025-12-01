@@ -1,0 +1,150 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  events       Event[]
+}
+
+model AdminSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+model SystemSetting {
+  id                           Int      @id @default(1)
+  impressumUrl                 String
+  privacyUrl                   String
+  supportEmail                 String
+  cacheVisibilityRadiusDefault Int
+  cacheFoundRadiusDefault      Int
+  dataRetentionDays            Int      @default(30)
+  maxEmailsPerHourPerAdmin     Int      @default(50)
+  maxEmailsPerDayPerAdmin      Int      @default(200)
+  smtpHost                     String?
+  smtpPort                     Int?
+  smtpUser                     String?
+  smtpPassword                 String?
+  smtpUseTls                   Boolean  @default(false)
+  smtpFromAddress              String?
+  smtpFromName                 String?
+  createdAt                    DateTime @default(now())
+  updatedAt                    DateTime @updatedAt
+}
+
+model Event {
+  id                  String         @id @default(cuid())
+  name                String
+  description         String?
+  startsAt            DateTime
+  endsAt              DateTime
+  visibleRadiusMeters Int
+  foundRadiusMeters   Int
+  startPoint          String?
+  endPoint            String?
+  invitationEmailSubject String?
+  invitationEmailBody    String?
+  senderEmail            String?
+  senderName             String?
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+  archived            Boolean        @default(false)
+  archivedAt          DateTime?
+  createdByAdminId    String?
+  createdBy           AdminUser?     @relation(fields: [createdByAdminId], references: [id])
+  caches              Cache[]
+  invitations         Invitation[]
+  emailLogs           EmailLog[]
+  players             Player[]
+}
+
+model Cache {
+  id         String     @id @default(cuid())
+  eventId    String
+  event      Event      @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  latitude   Float
+  longitude  Float
+  clue       String
+  solution   String
+  createdAt  DateTime   @default(now())
+  foundByAny Boolean    @default(false)
+  foundAt    DateTime?
+  finds      CacheFind[]
+}
+
+model Invitation {
+  id             String        @id @default(cuid())
+  eventId        String
+  event          Event         @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  token          String        @unique
+  deliveryMethod InvitationMethod
+  email          String?
+  createdAt      DateTime      @default(now())
+  usedAt         DateTime?
+  isActive       Boolean       @default(true)
+  deactivatedAt  DateTime?
+  emailLogs      EmailLog[]
+}
+
+enum InvitationMethod {
+  LINK
+  EMAIL
+}
+
+model CacheFind {
+  id        String   @id @default(cuid())
+  cacheId   String
+  cache     Cache    @relation(fields: [cacheId], references: [id], onDelete: Cascade)
+  playerId  String
+  player    Player?  @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  nickname  String?
+  foundAt   DateTime @default(now())
+}
+
+model EmailLog {
+  id           String      @id @default(cuid())
+  eventId      String?
+  event        Event?      @relation(fields: [eventId], references: [id])
+  invitationId String?
+  invitation   Invitation? @relation(fields: [invitationId], references: [id])
+  adminId      String?
+  admin        AdminUser?  @relation(fields: [adminId], references: [id])
+  recipient    String
+  subject      String
+  status       EmailStatus
+  errorMessage String?
+  createdAt    DateTime    @default(now())
+
+  @@index([adminId, createdAt])
+  @@index([eventId, createdAt])
+}
+
+model Player {
+  id           String   @id @default(cuid())
+  eventId      String
+  event        Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  nickname     String?
+  createdAt    DateTime @default(now())
+  lastActiveAt DateTime @default(now())
+  finds        CacheFind[]
+
+  @@index([eventId, lastActiveAt])
+}
+
+enum EmailStatus {
+  SENT
+  FAILED
+  DISABLED
+  RATE_LIMITED
+}
