@@ -9,7 +9,7 @@ Unterstützte OS: Debian 11/12, Ubuntu 20.04/22.04. Hardware: 1 vCPU, 1 GB RAM, 
 
 Befehl (als root):
 ```bash
-curl -sSL https://raw.githubusercontent.com/DeepRedStar/GeoCachingEngine/main/deploy/quickstart.sh | bash
+curl -sSL https://raw.githubusercontent.com/<OWNER>/<REPO>/<BRANCH>/deploy/quickstart.sh | bash
 ```
 
 Was das Skript erledigt:

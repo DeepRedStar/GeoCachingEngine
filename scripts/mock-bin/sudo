@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+echo "[MOCK] sudo $*" >&2
+if [[ $# -ge 2 && "$1" == "-u" ]]; then
+  shift 2
+fi
+exec "$@"

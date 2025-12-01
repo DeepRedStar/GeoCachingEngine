@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+if [[ "$1" == "clone" ]]; then
+  repo="$2"
+  dest="$3"
+  echo "[MOCK] git clone ${repo} ${dest}" >&2
+  mkdir -p "${dest}/.git"
+  exit 0
+fi
+if [[ "$1" == "-C" && $# -ge 3 ]]; then
+  dir="$2"
+  shift 2
+  echo "[MOCK] git -C ${dir} $*" >&2
+  exit 0
+fi
+echo "[MOCK] git $*" >&2
+exit 0

@@ -39,7 +39,13 @@ CREDS_FILE=${CREDS_FILE:-/root/geocachingengine-credentials.txt}
 DEPLOY_MODE=${DEPLOY_MODE:-public}
 
 random_secret() {
-  LC_ALL=C tr -dc 'A-Za-z0-9._%+-' < /dev/urandom | head -c 24
+  python3 - <<'PY'
+import secrets
+import string
+
+alphabet = string.ascii_letters + string.digits + "._%+-"
+print(''.join(secrets.choice(alphabet) for _ in range(24)))
+PY
 }
 
 read -r -p "Deployment-Modus [public/lan] (Standard: public): " DEPLOY_CHOICE
@@ -62,7 +68,7 @@ DB_PASSWORD=$(random_secret)
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -y
 apt-get upgrade -y
-apt-get install -y ca-certificates curl git gnupg lsb-release software-properties-common sudo
+apt-get install -y ca-certificates curl git gnupg lsb-release software-properties-common sudo python3
 
 if ! command -v node >/dev/null 2>&1; then
   curl -fsSL "https://deb.nodesource.com/setup_${NODE_MAJOR}.x" | bash -
