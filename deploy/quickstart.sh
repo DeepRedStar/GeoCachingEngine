@@ -33,14 +33,17 @@ APP_DIR=${APP_DIR:-/opt/geocachingengine}
 NODE_MAJOR=${NODE_MAJOR:-20}
 DB_NAME=${DB_NAME:-geocaching}
 DB_USER=${DB_USER:-geocaching_app}
-REPO_URL=${REPO_URL:-"https://github.com/GeoCachingEngine/GeoCachingEngine.git"}
+REPO_URL=${REPO_URL:-"https://github.com/DeepRedStar/GeoCachingEngine.git"}
+ENV_FILE=${ENV_FILE:-"$APP_DIR/.env"}
+CREDS_FILE=${CREDS_FILE:-/root/geocachingengine-credentials.txt}
+DEPLOY_MODE=${DEPLOY_MODE:-public}
 
 random_secret() {
   LC_ALL=C tr -dc 'A-Za-z0-9._%+-' < /dev/urandom | head -c 24
 }
 
 read -r -p "Deployment-Modus [public/lan] (Standard: public): " DEPLOY_CHOICE
-DEPLOY_MODE="public"
+DEPLOY_MODE="${DEPLOY_MODE:-public}"
 if [[ "${DEPLOY_CHOICE:-}" == "lan" ]]; then
   DEPLOY_MODE="local"
 fi
@@ -91,7 +94,6 @@ else
   sudo -u "$APP_USER" git -C "$APP_DIR" pull
 fi
 
-ENV_FILE="$APP_DIR/.env"
 cat >"$ENV_FILE" <<EOF_ENV
 DATABASE_URL=postgresql://$DB_USER:$DB_PASSWORD@localhost:5432/$DB_NAME
 PUBLIC_URL=$BASE_URL
@@ -187,7 +189,7 @@ if [[ -f /etc/nginx/sites-enabled/default ]]; then
 fi
 nginx -t && systemctl reload nginx
 
-CREDS_FILE="/root/geocachingengine-credentials.txt"
+umask 077
 cat >"$CREDS_FILE" <<EOF_CREDS
 GeoCachingEngine Quickstart Credentials
 ======================================
@@ -209,9 +211,9 @@ Hinweise:
 EOF_CREDS
 chmod 600 "$CREDS_FILE"
 
-cat <<'EOM'
+cat <<EOM
 Quickstart abgeschlossen.
-Die Zugangsdaten wurden in /root/geocachingengine-credentials.txt gespeichert.
+Die Zugangsdaten wurden in ${CREDS_FILE} gespeichert.
 Bitte sichern Sie die Datei extern und löschen Sie sie anschließend vom Server.
 Ändern Sie das Admin-Passwort nach dem ersten Login.
 EOM
